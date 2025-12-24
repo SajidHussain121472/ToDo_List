@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test To-Do Backend</title>
+</head>
+<body>
+  <h1>Add Task</h1>
+  <input id="taskTitle" placeholder="Task title">
+  <button onclick="addTask()">Add Task</button>
+
+  <h2>Tasks</h2>
+  <ul id="tasksList"></ul>
+
+  <script>
+    async function addTask() {
+      const title = document.getElementById('taskTitle').value;
+      const res = await fetch('http://localhost:3000/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, completed: false })
+      });
+      const task = await res.json();
+      displayTasks();
+      document.getElementById('taskTitle').value = '';
+    }
+
+    async function displayTasks() {
+      const res = await fetch('http://localhost:3000/tasks');
+      const tasks = await res.json();
+      const ul = document.getElementById('tasksList');
+      ul.innerHTML = '';
+      tasks.forEach(task => {
+        const li = document.createElement('li');
+        li.textContent = task.title;
+        ul.appendChild(li);
+      });
+    }
+
+    displayTasks();
+  </script>
+</body>
+</html>
+
